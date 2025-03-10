@@ -1,16 +1,9 @@
 const {Pool} = require("pg");
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'yelp',
-    password: 'aditya',
-    port: 5432,
-});
+// no need to mention the host, user, password, database, port pg will take it from the environment variables
+const pool = new Pool();
 
 module.exports = {
     query: (text, params) => pool.query(text, params),
 };
-
-
 

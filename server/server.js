@@ -47,6 +47,7 @@ app.use((req, res, next)=>
 
 
 app.get("/api/v1/resturants", async(req, res) => {
+ 
 
     try{
         const results = await db.query('SELECT * FROM restaurants');    
@@ -70,7 +71,8 @@ app.get("/api/v1/resturants/:id", async(req, res) => {
     console.log(req.params.id);
     try {
         // const results = db.query("SELECT * FROM restaurants WHERE id = 1", [req.params.id]);
-        const results1 = await db.query(`SELECT * FROM restaurants WHERE id = ${req.params.id}`);
+        const results1 = await db.query(`SELECT * FROM restaurants WHERE id = $1`, [req.params.id ]);
+
         console.log(results1.rows[0]);
         res.status(200).json({
             status: "success", 
@@ -87,15 +89,21 @@ app.get("/api/v1/resturants/:id", async(req, res) => {
 })
 
 // create a resturants
-app.post("/api/v1/resturants", (req, res) => {
+app.post("/api/v1/resturants", async(req, res) => {
     console.log(req.body);
-    res.status(201).json({
-        status: "success", 
-        data: {
-            resturants: ["McDonalds", "KFC", "Pizza Hut"]
-        }
+
+    try {
+        const results = await db.query("INSERT INTO restaurants (name, location, price_range) values ($1, $2, $3) returning *", [req.body.name, req.body.location, req.body.price_range]);
+        console.log(results);
+        res.status(201).json({
+            status: "success", 
+            data: {
+                resturants: results.rows[0],
+            },
+        });
+    } catch (error) {
+        console.log(error);
     }
-    );
 })
 
 
