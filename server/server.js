@@ -108,27 +108,35 @@ app.post("/api/v1/resturants", async(req, res) => {
 
 
 // Update a resturants
-app.put("/api/v1/resturants/:id", (req, res) => {
-    console.log(req.params.id);
-    console.log(req.body);
-    res.status(200).json({
-        status: "success", 
-        data: {
-            resturants: ["McDonalds", "KFC", "Pizza Hut"]
-        }
+app.put("/api/v1/resturants/:id", async(req, res) => {
+    try {
+        const resluts = await db.query("UPDATE restaurants SET name = $1, location = $2, price_range = $3 WHERE id = $4 returning *", [req.body.name, req.body.location, req.body.price_range, req.params.id]);
+        console.log(resluts);
+        res.status(200).json({
+            status: "success",
+            data:{
+                resturants: resluts.rows[0],
+            }
+        })
+    } catch (error) {
+        console.log(error);
     }
-    );
 })
 
 // Delete a resturant
 
-app.delete("/api/v1/resturants/:id",(req,res)=> {
-    console.log(req.params.id);
-    res.status(204).json({
-        status: "success",  
-        data: null
+app.delete("/api/v1/resturants/:id", async(req,res)=> {
+    try {
+        const results = await db.query("DELETE FROM restaurants WHERE id = $1", [req.params.id]);
+        console.log(results);    
+        res.status(204).json({
+            status: "success",  
+            data: null
+        }
+        );
+    } catch (error) {
+        console.log(error);
     }
-    );
 })
 
 const port = process.env.PORT || 3300;
