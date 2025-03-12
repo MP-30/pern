@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Updatepage from "./routes/Updatepage";
 import RestaurantdetailPage from "./routes/RestaurantdetailPage";
 import Home from "./routes/home";
+import { RestaurantsContextProvider } from "./context/restaurantsContext";
 
 const App = () => {
+
     return (
+        <RestaurantsContextProvider>    
         <div className="container">
             <Router>
                 <Routes>
@@ -15,6 +18,7 @@ const App = () => {
                 </Routes>
             </Router>
         </div>
+        </ RestaurantsContextProvider>
         
     );
 };
